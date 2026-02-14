@@ -24,68 +24,71 @@
       el prompt para seleccionar el tipo de reporte.
  */
 
-import { COLORS } from '../helpers/colors.ts';
-
 // 1. Definir la interfaz Report
-interface Report {
+interface DeliveryPlan {
   generate(): void;
 }
 
 // 2. Clases concretas de Reportes
 // Implementar SalesReport e InventoryReport
 
-class SalesReport implements Report {
-  // TODO: implementar el método e imprimir en consola:
-  // 'Generando reporte de ventas...'
+class RoadDeliveryPlan implements DeliveryPlan {
+  generate(): void {
+    console.log("This is your ROAD delivery plan 🚗");
+  }
 }
 
-class InventoryReport implements Report {
-  // TODO: implementar el método e imprimir en consola:
-  // 'Generando reporte de inventario...'
+class SeaDeliveryPlan implements DeliveryPlan {
+  generate(): void {
+    console.log("This is your SEA delivery plan 🛥️");
+  }
 }
 
 // 3. Clase Base ReportFactory con el Método Factory
 
-abstract class ReportFactory {
-  abstract createReport(): Report;
+abstract class LogisticsFactory {
+  protected abstract createDeliveryPlan(): DeliveryPlan;
 
-  generateReport(): void {
-    const report = this.createReport();
+  generateDeliveryPlan(): void {
+    const report = this.createDeliveryPlan();
     report.generate();
   }
 }
 
 // 4. Clases Concretas de Fábricas de Reportes
 
-class SalesReportFactory extends ReportFactory {
-  createReport(): Report {
-    throw new Error('Method not implemented.');
+class RoadLogisticsFactory extends LogisticsFactory {
+  createDeliveryPlan(): DeliveryPlan {
+    return new RoadDeliveryPlan();
   }
 }
 
-class InventoryReportFactory extends ReportFactory {
-  createReport(): Report {
-    throw new Error('Method not implemented.');
+class SeaLogisticsFactory extends LogisticsFactory {
+  createDeliveryPlan(): DeliveryPlan {
+    return new SeaDeliveryPlan();
   }
 }
 
 // 5. Código Cliente para Probar
 
 function main() {
-  let reportFactory: ReportFactory;
+  let logisticFactory: LogisticsFactory;
 
-  const reportType = prompt(
-    '¿Qué tipo de reporte deseas? %c(sales/inventory)',
-    COLORS.red
-  );
+  const reportType = prompt("What kind of delivery plan you need? (road/sea)");
 
-  if (reportType === 'sales') {
-    reportFactory = new SalesReportFactory();
-  } else {
-    reportFactory = new InventoryReportFactory();
+  switch (reportType) {
+    case "road":
+      logisticFactory = new RoadLogisticsFactory();
+      break;
+    case "sea":
+      logisticFactory = new SeaLogisticsFactory();
+      break;
+
+    default:
+      throw new Error("Not valid option");
   }
 
-  reportFactory.generateReport();
+  logisticFactory.generateDeliveryPlan();
 }
 
 main();
